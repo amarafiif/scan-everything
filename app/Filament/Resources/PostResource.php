@@ -20,6 +20,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Str;
@@ -47,7 +48,8 @@ class PostResource extends Resource
                         ColorPicker::make('color')->required(),
                         Select::make('category_id')
                             ->label('Category')
-                            ->options(Category::all()->pluck('name', 'id')),
+                            // ->options(Category::all()->pluck('name', 'id')),
+                            ->relationship('category', 'name'),
                         MarkdownEditor::make('content')->required()->columnSpan('full'),
                     ])->columnSpan(2)->columns(2),
                 Group::make([
@@ -58,7 +60,7 @@ class PostResource extends Resource
                     Section::make("Meta")
                         ->schema([
                             TagsInput::make('tags')->required()->columnSpan('full'),
-                            Checkbox::make('published')->required()->columnSpan('full')
+                            Checkbox::make('published')->columnSpan('full')
                         ])
                 ]),
             ])->columns(3);
@@ -68,8 +70,24 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title'),
+                TextColumn::make('title')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable(),
                 TextColumn::make('category.name')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable(),
+                CheckboxColumn::make('published')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable(),
+                TextColumn::make('updated_at')
+                    ->date()
+                    ->label('Last Updated')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
             ])
             ->filters([
                 //
