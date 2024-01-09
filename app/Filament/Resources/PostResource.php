@@ -46,12 +46,17 @@ class PostResource extends Resource
                             ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                         TextInput::make('slug')->required(),
                         ColorPicker::make('color')->required(),
+
                         Select::make('category_id')
                             ->label('Category')
-                            // ->options(Category::all()->pluck('name', 'id')),
-                            ->relationship('category', 'name'),
+                            ->relationship('category', 'name')
+                            ->searchable()
+                            ->required(),
+
                         MarkdownEditor::make('content')->required()->columnSpan('full'),
                     ])->columnSpan(2)->columns(2),
+
+
                 Group::make([
                     Section::make("Image")
                         ->schema([

@@ -13,4 +13,11 @@ class Category extends Model
         'name',
         'slug'
     ];
+
+    protected $guarded = [];
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }
